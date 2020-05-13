@@ -27,22 +27,24 @@ public class Linux extends OSParser {
 
   private static final Logger log = LoggerFactory.getLogger(Linux.class);
   private String LinuxDateFormat;
+  private DateTimeFormatter formatter;
 
   private final HashSet<String> IgnoreLinesBeginningWith = new HashSet<>(Arrays.asList(
       "Average:", "##", "Summary", "Summary:"));
 
   public void parse_header(String s) {
 
-    String[] columns = s.split("\\s+");
+    log.debug("Header Line : {}", s);
+    String[] columns = s.split("\\s+", 5);
 
-    String tmpstr;
     setOstype(columns[0]);
     setKernel(columns[1]);
-    tmpstr = columns[2];
+
+    String tmpstr = columns[2];
     setHostname(tmpstr.substring(1, tmpstr.length() - 1));
+
     checkDateFormat();
     setDate(columns[3]);
-
   }
 
   private void checkDateFormat() {
@@ -70,12 +72,12 @@ public class Linux extends OSParser {
         timeColumn = 2;
       }
     }
-
+    log.debug("Date Format: {}, Time Format: {}", dateFormat, timeFormat);
   }
 
   private void askDateFormat() {
 
-    log.debug("askDateFormat - provide date format");
+    log.trace("askDateFormat - provide date format");
     if (GlobalOptions.hasUI()) {
       LinuxDateFormat tmp = new LinuxDateFormat(GlobalOptions.getUI(), true);
       tmp.setTitle("Provide date format");
@@ -98,6 +100,7 @@ public class Linux extends OSParser {
     }
 
     if (line.contains("LINUX RESTART")) {
+      log.debug("{}", line);
       return 0;
     }
 
@@ -111,11 +114,18 @@ public class Linux extends OSParser {
         }
       }
 
+      if (formatter == null) {
+        if (timeColumn == 2) {
+          formatter = DateTimeFormatter.ofPattern(timeFormat, Locale.US);
+        } else {
+          formatter = DateTimeFormatter.ofPattern(timeFormat);
+        }
+        log.debug("Time formatter: {}",formatter);
+      }
+
       if (timeColumn == 2) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(timeFormat, Locale.US);
         parsetime = LocalTime.parse(columns[0] + " " + columns[1], formatter);
       } else {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(timeFormat);
         parsetime = LocalTime.parse(columns[0], formatter);
       }
 
@@ -172,13 +182,9 @@ public class Linux extends OSParser {
       }
     }
 
-    //log.trace("{} {}", currentStat, line);
-
     if (lastStat != null) {
       if (!lastStat.equals(currentStat)) {
-        if (GlobalOptions.isDodebug()) {
-          log.debug("Stat change from {} to {}", lastStat, currentStat);
-        }
+        log.debug("Stat change from {} to {}", lastStat, currentStat);
         lastStat = currentStat;
       }
     } else {

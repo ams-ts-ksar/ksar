@@ -62,8 +62,7 @@ public class CnxHistory {
   }
 
   public int getPortInt() {
-    Integer tmp = Integer.parseInt(port);
-    return tmp.intValue();
+    return Integer.parseInt(port);
   }
 
   public void setPort(String port) {
@@ -81,10 +80,7 @@ public class CnxHistory {
     if (hostname == null) {
       return false;
     }
-    if (commandList.isEmpty()) {
-      return false;
-    }
-    return true;
+    return !commandList.isEmpty();
   }
 
   public void dump() {

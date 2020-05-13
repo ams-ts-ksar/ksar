@@ -34,11 +34,11 @@
             </Stat>
             <Stat name="page1">
                 <headerstr>frmpg/s bufpg/s campg/s</headerstr>
-                <graphname>PAGE_NEW</graphname>
+                <graphname>IGNORE</graphname>
             </Stat>
             <Stat name="page2">
                 <headerstr>frmpg/s shmpg/s bufpg/s campg/s</headerstr>
-                <graphname>PAGE_OLD</graphname>
+                <graphname>IGNORE</graphname>
             </Stat>
             <Stat name="load1">
                 <headerstr>runq-sz plist-sz ldavg-1 ldavg-5</headerstr>
@@ -170,7 +170,7 @@
                 <graphname>IGNORE</graphname>
             </Stat>
             <Stat name="miscip4">
-                <headerstr>imsg/s omsg/s iech/s iechr/s oech/s oechr/s itm/s itmr/s otm/s otmr/s iadrmk/s iadrmkr/s  oadrmk/s oadrmkr/s</headerstr>
+                <headerstr>imsg/s omsg/s iech/s iechr/s oech/s oechr/s itm/s itmr/s otm/s otmr/s iadrmk/s iadrmkr/s oadrmk/s oadrmkr/s</headerstr>
                 <graphname>IGNORE</graphname>
             </Stat>
             <Stat name="miscip5">
@@ -189,8 +189,12 @@
                 <headerstr>idgm/s odgm/s noport/s idgmerr/s</headerstr>
                 <graphname>IGNORE</graphname>
             </Stat>
+            <Stat name="miscip9">
+                <headerstr>idgm6/s odgm6/s noport6/s idgmer6/s</headerstr>
+                <graphname>IGNORE</graphname>
+            </Stat>
             <Stat name="miscip10">
-                <headerstr>imsg6/s omsg6/s iech6/s iechr6/s oechr6/s igmbq6/s  igmbr6/s ogmbr6/s igmbrd6/s ogmbrd6/s irtsol6/s ortsol6/s irtad6/s inbsol6/s onbsol6/s inbad6/s onbad6/s</headerstr>
+                <headerstr>imsg6/s omsg6/s iech6/s iechr6/s oechr6/s igmbq6/s igmbr6/s ogmbr6/s igmbrd6/s ogmbrd6/s irtsol6/s ortsol6/s irtad6/s inbsol6/s onbsol6/s inbad6/s onbad6/s</headerstr>
                 <graphname>IGNORE</graphname>
             </Stat>
             <Stat name="miscip12">
@@ -202,7 +206,7 @@
                 <graphname>IGNORE</graphname>
             </Stat>
             <Stat name="miscip15">
-                <headerstr>ierr6/s idtunr6/s odtunr6/s  itmex6/s  otmex6/s iprmpb6/s oprmpb6/s iredir6/s oredir6/s ipck2b6/s opck2b6/s</headerstr>
+                <headerstr>ierr6/s idtunr6/s odtunr6/s itmex6/s otmex6/s iprmpb6/s oprmpb6/s iredir6/s oredir6/s ipck2b6/s opck2b6/s</headerstr>
                 <graphname>IGNORE</graphname>
             </Stat>
             <Stat name="misci_temp">
@@ -256,6 +260,10 @@
             <Stat name="hpage">
                 <headerstr>kbhugfree kbhugused %hugused</headerstr>
                 <graphname>HPAGE</graphname>
+            </Stat>
+            <Stat name="cpu_softnet_11.5.2">
+                <headerstr>CPU total/s dropd/s squeezd/s rx_rps/s flw_lim/s</headerstr>
+                <graphname>CPU_SOFTNET_11.5.2</graphname>
             </Stat>
 
             <!-- GRAPHS -->
@@ -378,7 +386,7 @@
                     <format base="1024" factor="1024" />
                 </Plot>
                 <Plot Title="areq-sz [KiB] / aqu-sz">
-                    <cols>avgrq-sz avgqu-sz</cols>
+                    <cols>areq-sz aqu-sz</cols>
                 </Plot>
                 <Plot Title="Response [ms]">
                     <cols>await</cols>
@@ -390,22 +398,6 @@
                 </Plot>
                 <Plot Title="blocks/s">
                     <cols>bread/s bwrtn/s</cols>
-                </Plot>
-            </Graph>
-            <Graph name="PAGE_NEW" Title="Memory Pages" type="unique">
-                <Plot Title="freed">
-                    <cols>frmpg/s</cols>
-                </Plot>
-                <Plot Title="buffered">
-                    <cols>bufpg/s</cols>
-                </Plot>
-                <Plot Title="cached">
-                    <cols>campg/s</cols>
-                </Plot>
-            </Graph>
-            <Graph name="PAGE_OLD" Title="Pages" type="unique">
-                <Plot Title="Page">
-                    <cols>frmpg/s shmpg/s bufpg/s campg/s</cols>
                 </Plot>
             </Graph>
             <Graph name="KMEM_OLD" Title="KMem" type="unique">
@@ -535,8 +527,8 @@
                     <cols>blocked</cols>
                 </Plot>
             </Graph>
-            <Graph name="SOCKET" Title="Socket" type="unique">
-                <Plot Title="Socket" size="3">
+            <Graph name="SOCKET" Title="Sockets" type="unique">
+                <Plot Title="Sockets" size="3">
                     <cols>totsck tcpsck udpsck rawsck</cols>
                 </Plot>
                 <Plot Title="TIME_WAIT">
@@ -572,10 +564,10 @@
                 </Plot>
             </Graph>
             <Graph name="PROC2" Title="Processes" type="unique">
-                <Plot Title="Proc">
+                <Plot Title="Task creation">
                     <cols>proc/s</cols>
                 </Plot>
-                <Plot Title="context">
+                <Plot Title="Context switches">
                     <cols>cswch/s</cols>
                 </Plot>
             </Graph>
@@ -617,7 +609,24 @@
                     <cols>file-nr</cols>
                 </Plot>
             </Graph>
-
+            <Graph name="CPU_SOFTNET_11.5.2" Title="CPU Network" type="multiple">
+                <Plot Title="total frames [1/s]">
+                    <cols>total/s</cols>
+                    <format base="1000" factor="1" />
+                </Plot>
+                <Plot Title="dropped [1/s]" size="1">
+                    <cols>dropd/s</cols>
+                </Plot>
+                <Plot Title="squeezed softirq [1/s]" size="1">
+                    <cols>squeezd/s</cols>
+                </Plot>
+                <Plot Title="CPU RPS wakeups [1/s]">
+                    <cols>rx_rps/s</cols>
+                </Plot>
+                <Plot Title="FlowLimit hits [1/s]">
+                    <cols>flw_lim/s</cols>
+                </Plot>
+            </Graph>
         </OSType>
     </OS>
     <!--  END OS -->

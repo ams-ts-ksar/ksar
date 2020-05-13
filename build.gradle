@@ -1,22 +1,13 @@
-buildscript {
-    repositories {
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
-    dependencies {
-        classpath "com.github.jengelman.gradle.plugins:shadow:2.0.4"
-    }
+plugins {
+    id 'java'
+    id 'application'
+    id "com.github.johnrengelman.shadow" version "5.2.0"
+    id 'checkstyle'
 }
-
-apply plugin: 'java'
-apply plugin: 'application'
-apply plugin: 'com.github.johnrengelman.shadow'
-apply plugin: 'checkstyle'
 
 group = 'com.github.vlsi.ksar'
 archivesBaseName = 'ksar'
-version = '5.2.4-SNAPSHOT'
+
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
@@ -28,23 +19,25 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
-    compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.11.0'
-    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.0'
-    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.0'
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.13.1'
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.13.1'
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.13.1'
 
-    compile group: 'com.itextpdf', name: 'itextpdf', version: '5.5.13'
-    compile group: 'com.jcraft', name: 'jsch', version: '0.1.54'
-    compile group: 'org.jfree', name: 'jfreechart', version: '1.5.0'
-    testCompile 'junit:junit:4.12'
+    implementation group: 'com.itextpdf', name: 'itextpdf', version: '5.5.13.1'
+    implementation group: 'com.jcraft', name: 'jsch', version: '0.1.55'
+    implementation group: 'org.jfree', name: 'jfreechart', version: '1.5.0'
+    testImplementation 'junit:junit:4.13'
 }
 
-task writeVersion << {
-    def s = version.find(/^\d.\d.\d/)
-    if (s == null) {
-        throw new InvalidUserDataException('Invalid version format')
+tasks.withType(JavaCompile){
+    options.compilerArgs << '-Xlint:unchecked' << '-Xlint:deprecation'
+}
+
+task writeVersion {
+    doLast {
+        new File("build/resources/main/kSar.version").text = version
     }
-    new File("build/resources/main/kSar.version").text = s
 }
 classes.dependsOn(writeVersion)
 
@@ -55,13 +48,13 @@ test {
 }
 
 checkstyle {
-    configFile = new File(rootDir, "/src/main/checkstyle/postgressql-checks.xml")
+    configFile = new File(rootDir, "/src/main/checkstyle/ksar-checks.xml")
 }
 
 jar {
     manifest {
-        attributes("Implementation-Title": "Gradle",
-                "Implementation-Version": version,
+        attributes("Implementation-Title": "kSAR",
+                "Implementation-Version": getArchiveVersion(),
                 "SplashScreen-Image": "logo_ksar.jpg")
     }
 }

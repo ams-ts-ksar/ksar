@@ -6,6 +6,7 @@
 package net.atomique.ksar;
 
 import net.atomique.ksar.ui.Desktop;
+import org.apache.logging.log4j.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +29,7 @@ public class Main {
   }
 
   public static void show_version() {
-    log.info("ksar Version : {}", VersionNumber.getVersionNumber());
+    log.info("ksar Version : {}", VersionNumber.getVersionString());
   }
 
   private static void set_lookandfeel() {
@@ -64,9 +65,9 @@ public class Main {
     int i = 0;
     String arg;
 
-    log.trace("main - Start");
-    log.trace("Java runtime Version : {}", System.getProperty("java.runtime.version"));
-    log.trace("ksar Version : {}", VersionNumber.getVersionNumber());
+    log.info("ksar Version : {}", VersionNumber.getVersionString());
+    log.info("Java runtime Version : {}", System.getProperty("java.runtime.version"));
+    log.info("Java runtime architecture : {}", System.getProperty("os.arch"));
 
     /// load default - Mac OS X Application Properties
     String mrjVersion = System.getProperty("mrj.version");
@@ -91,8 +92,12 @@ public class Main {
           usage();
           continue;
         }
-        if ("-test".equals(arg)) {
-          GlobalOptions.setDodebug(true);
+        if ("-test".equals(arg) || "-debug".equals(arg)) {
+          org.apache.logging.log4j.core.config.Configurator.setRootLevel(Level.DEBUG);
+          continue;
+        }
+        if ("-trace".equals(arg)) {
+          org.apache.logging.log4j.core.config.Configurator.setRootLevel(Level.TRACE);
           continue;
         }
         if ("-input".equals(arg)) {
@@ -101,8 +106,8 @@ public class Main {
           } else {
             exit_error(resource.getString("INPUT_REQUIRE_ARG"));
           }
-          continue;
         }
+
       }
     }
 
