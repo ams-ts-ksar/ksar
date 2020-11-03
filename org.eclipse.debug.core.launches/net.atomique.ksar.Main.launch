@@ -14,5 +14,6 @@
     </listAttribute>
     <booleanAttribute key="org.eclipse.jdt.launching.DEFAULT_CLASSPATH" value="false"/>
     <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="net.atomique.ksar.Main"/>
+    <stringAttribute key="org.eclipse.jdt.launching.MODULE_NAME" value="kSar"/>
     <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="kSar"/>
 </launchConfiguration>
